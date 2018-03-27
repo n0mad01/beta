@@ -10,14 +10,13 @@ namespace WebsocketSample
 {
     public sealed class BittrexWebsocket
     {
-        private HubConnection _hubConnection { get; }
-        private IHubProxy _hubProxy { get; }
-
         public delegate void BittrexCallback(string info);
 
+        private HubConnection   _hubConnection       { get; }
+        private IHubProxy       _hubProxy            { get; }
         private BittrexCallback _updateExchangeState { get; }
-        private BittrexCallback _updateOrderState { get; }
-        private BittrexCallback _updateBalanceState { get; }
+        private BittrexCallback _updateOrderState    { get; }
+        private BittrexCallback _updateBalanceState  { get; }
 
         public BittrexWebsocket(
             string          connectionUrl, 
@@ -35,22 +34,22 @@ namespace WebsocketSample
             _hubConnection = new HubConnection(connectionUrl);
             _hubProxy      = _hubConnection.CreateHubProxy("c2");
 
-            // Register callback for uE ("updateExchangeState") events
+            // Register callback for uE (exchange state delta) events
             _hubProxy.On(
                 "uE", 
-                exchangeStateDelta => _updateExchangeState?.Invoke(Decode(exchangeStateDelta))
+                exchangeStateDelta => _updateExchangeState?.Invoke(exchangeStateDelta)
                 );
             
-            // Register callback for uO ("updateOrderState") events
+            // Register callback for uO (order status change) events
             _hubProxy.On(
                 "uO", 
-                orderStateDelta => _updateOrderState?.Invoke(Decode(orderStateDelta))
+                orderStateDelta => _updateOrderState?.Invoke(orderStateDelta)
                 );
             
-            // Register callback for uB ("updateBalanceState") events
+            // Register callback for uB (balance status change) events
             _hubProxy.On(
                 "uB", 
-                balanceStateDelta => _updateBalanceState?.Invoke(Decode(balanceStateDelta))
+                balanceStateDelta => _updateBalanceState?.Invoke(balanceStateDelta)
                 );
 
             _hubConnection.Start().Wait();
@@ -102,6 +101,11 @@ namespace WebsocketSample
     {
         static public BittrexWebsocket.BittrexCallback CreateCallback(string name)
         {
+            //
+            // In a real app, your code would do something useful based on the
+            // information accompanying each event.
+            //
+
             return (info) => 
             {
                 Console.WriteLine($"Callback Invoked: {name}");
@@ -128,13 +132,20 @@ namespace WebsocketSample
                         CreateCallback("balance")
                         );
 
+                    // If we successfully authenticate, we'll be subscribed to the uO and uB events.
                     var isAuthenticated = await btx.Authenticate(
                         apiKey,
                         BittrexWebsocket.CreateSignature(apiSecret, await btx.GetAuthContext(apiKey))
                         );
+
+                    // Register for orderbook updates on the BTC-ETH market
+                    await btx.SubscribeToExchangeDeltas("BTC-ETH");
                 });
 
             task.Wait();
+
+            Console.WriteLine("Press any key to exit sample...");
+            Console.ReadLine();
         }
     }
 }
