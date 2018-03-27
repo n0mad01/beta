@@ -15,7 +15,7 @@ _**Note:** Corporate and high-volume accounts may contact customer support for a
 ### Websocket API (WS API)
 To help ensure these changes do not present issues for customers, we are encouraging developers to use our Websocket API to have the most commonly-requested data pushed to them instead of needing to poll the REST API. The WS API supplies public market data (e.g. exchange status, summary ticks) and account-level information such as order and balance status.
 
--------------------
+
 
 ## API Best Practices
 Below, users may find best practices for the most common API scenarios. By implementing these recommendations, customers using API may ensure timely access to account and exchange data while minimizing the possibility of being throttled due to improper use or blacklisted due to suspected malicious behavior.
@@ -26,7 +26,7 @@ Instead of polling the REST-based account and market APIs for open order and bal
 ### Obtaining Ticker Data
 Many users poll the REST API as quickly as possible for updated ticker data. At very high call rates, the API most often returns the same data because we only update it **_once per second_**. By using the WS API’s `QueryExchangeState` and `SubscribeToExchangeDelta` functions, developers can get ticker data as soon as it is generated.
 
--------------------
+
 
 ## WS API Overview
 The Bittrex Websocket API is implemented using [SignalR](https://www.asp.net/signalr), and while several SignalR clients exist for different languages, if one is not available for your environment, you will need to write one.
@@ -60,7 +60,7 @@ Once connected, developers can obtain account-level data using the following ste
 
 The details for each API call are documented in the next section.
 
--------------------
+
 
 ## WS API Reference
 
@@ -75,6 +75,8 @@ apiKey|string|A valid  API key for your account.
 #### Response
 A string of challenge data to be used in `Authenticate`.
 
+---
+
 ### `Authenticate`
 #### Description
 Verifies a user’s identity to the server and begins receiving account-level notifications. Users must sign the challenge returned by `GetAuthContext` using the [v1.1 API's](https://bittrex.com/Home/Api) request signing method before calling this function.
@@ -87,6 +89,8 @@ apiKey|string|A valid  API key for your account.
 response|string|Signed challenge from `GetAuthContext`.
 #### Response
 Boolean indication of success or failure.
+
+---
 
 ### `QueryExchangeState`
 #### Description
@@ -130,6 +134,8 @@ JSON object containing market state.
 }
 ```
 
+---
+
 ### `QuerySummaryState`
 #### Description
 Allows the caller to retrieve the full state for all markets.
@@ -159,6 +165,8 @@ JSON object containing state data for all markets.
 }
 ```
 
+---
+
 ### `SubscribeToExchangeDeltas`
 #### Description
 Allows the caller to receive real-time updates to the state of a single market. The caller must register a callback for the uE event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See Appendix B for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
@@ -171,6 +179,8 @@ marketName|String|The market identifier, e.g. BTC-ETH
 #### Response
 Boolean indicating whether the user was subscribed to the feed.
 
+---
+
 ### `SubscribeToSummaryDeltas`
 #### Description
 Allows the caller to receive real-time updates of the state of all markets. The caller must register a callback for the `uS` event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See Appendix B for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
@@ -179,7 +189,7 @@ _**Note:** Summary delta callbacks are verbose. A subset of the same data limite
 #### Response
 Boolean indicating whether the user was subscribed to the feed.
 
--------------------
+
 
 # Appendix A: Minified JSON Keys
 ```
@@ -244,7 +254,7 @@ Boolean indicating whether the user was subscribed to the feed.
 ```
 _**Note:** The term “nounce” in this document is not a mistake. While most of the Bittrex API uses the term “nonce”, the platform’s internal code has a typo that makes its way out into JSON response objects. This is a known bug and will be fixed in a future release._
 
--------------------
+
 
 # Appendix B: Callbacks and Payloads
 
@@ -270,6 +280,8 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
     }
 }
 ```
+
+---
 
 ## `Market Delta - uE`
 ### Callback For
@@ -307,6 +319,8 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
 }
 ```
 
+---
+
 ## `Lite Summary Delta - uL`
 ### Callback For
 `SubscribeToSummaryLiteDeltas`
@@ -323,6 +337,8 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
     ]
 }
 ```
+
+---
 
 ## `Order Delta - uO`
 ### Callback For
@@ -360,6 +376,8 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
     ]
 }
 ```
+
+---
 
 ## `Summary Delta - uS`
 ### Callback For
