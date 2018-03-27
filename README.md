@@ -21,7 +21,7 @@ To help ensure these changes do not present issues for customers, we are encoura
 Below, users may find best practices for the most common API scenarios. By implementing these recommendations, customers using API may ensure timely access to account and exchange data while minimizing the possibility of being throttled due to improper use or blacklisted due to suspected malicious behavior.
 
 ### Obtaining Order and Balance Status
-Instead of polling the REST-based account and market APIs for open order and balance information, developers should use the WS API and subscribe to account-level data, detailed in **WS API Overview**.
+Instead of polling the REST-based account and market APIs for open order and balance information, developers should use the WS API and subscribe to account-level data, detailed in [WS API Overview](#ws-api-overview).
 
 ### Obtaining Ticker Data
 Many users poll the REST API as quickly as possible for updated ticker data. At very high call rates, the API most often returns the same data because we only update it **_once per second_**. By using the WS API’s `QueryExchangeState` and `SubscribeToExchangeDelta` functions, developers can get ticker data as soon as it is generated.
@@ -49,7 +49,7 @@ Type|Description
 The Beta WS API endpoint is https://beta.bittrex.com/signalr. Once connected, be sure to connect to the `c2` hub. No other hubs are supported for use by Bittrex customers.
 
 ### Response Handling
-All responses are compressed by the server using GZip and base64 encoded prior to transmission. Users must reverse this process to retrieve the JSON payload. Further, field keys in the response JSON are minified. Appendix A contains a table of the keys and their un-minified counterparts.
+All responses are compressed by the server using GZip and base64 encoded prior to transmission. Users must reverse this process to retrieve the JSON payload. Further, field keys in the response JSON are minified. [Appendix A](#appendix-a-minified-json-keys) contains a table of the keys and their un-minified counterparts.
 
 ### Subscribing to Account-Level Data
 Once connected, developers can obtain account-level data using the following steps:
@@ -81,7 +81,7 @@ A string of challenge data to be used in `Authenticate`.
 #### Description
 Verifies a user’s identity to the server and begins receiving account-level notifications. Users must sign the challenge returned by `GetAuthContext` using the [v1.1 API's](https://bittrex.com/Home/Api) request signing method before calling this function.
 
-To receive the account-level notifications enabled by authenticating, the caller must register callbacks for the `uO` and `uB` events through their SignalR client. See Appendix B for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
+To receive the account-level notifications enabled by authenticating, the caller must register callbacks for the `uO` and `uB` events through their SignalR client. See [Appendix B](#appendix-b-callbacks-and-payloads) for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
 #### Parameters
 Name|Type|Description
 ----|----|-----------
@@ -169,7 +169,7 @@ JSON object containing state data for all markets.
 
 ### `SubscribeToExchangeDeltas`
 #### Description
-Allows the caller to receive real-time updates to the state of a single market. The caller must register a callback for the uE event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See Appendix B for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
+Allows the caller to receive real-time updates to the state of a single market. The caller must register a callback for the uE event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See [Appendix B](#appendix-b-callbacks-and-payloads) for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
 
 _**Note:** This feed only contains updates to exchange state. To form a complete picture of exchange state, users must first call QueryExchangeState and merge deltas into the data structure returned in that call._
 #### Parameters
@@ -183,7 +183,7 @@ Boolean indicating whether the user was subscribed to the feed.
 
 ### `SubscribeToSummaryDeltas`
 #### Description
-Allows the caller to receive real-time updates of the state of all markets. The caller must register a callback for the `uS` event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See Appendix B for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
+Allows the caller to receive real-time updates of the state of all markets. The caller must register a callback for the `uS` event through their SignalR client. Upon subscribing, the callback will be invoked with market deltas as they occur. See [Appendix B](#appendix-b-callbacks-and-payloads) for event payload details and see the [sample code](./samples/WebsocketSample.cs) for an example of how to subscribe using the C# SignalR library.
 
 _**Note:** Summary delta callbacks are verbose. A subset of the same data limited to the market name, the last price, and the base currency volume can be obtained via `SubscribeToSummaryLiteDeltas`, just use `uL` instead of `uS.`_
 #### Response
@@ -281,7 +281,6 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
 }
 ```
 
----
 
 ## `Market Delta - uE`
 ### Callback For
@@ -319,7 +318,6 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
 }
 ```
 
----
 
 ## `Lite Summary Delta - uL`
 ### Callback For
@@ -338,7 +336,6 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
 }
 ```
 
----
 
 ## `Order Delta - uO`
 ### Callback For
@@ -377,7 +374,6 @@ _**Note:** The term “nounce” in this document is not a mistake. While most o
 }
 ```
 
----
 
 ## `Summary Delta - uS`
 ### Callback For
