@@ -144,7 +144,7 @@ namespace WebsocketSample
 
             task.Wait();
 
-            Console.WriteLine("Press any key to exit sample...");
+            Console.WriteLine("Press enter to exit sample...");
             Console.ReadLine();
         }
     }
