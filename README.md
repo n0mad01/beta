@@ -5,7 +5,7 @@ On March 27, 2018, Bittrex released the Beta version of its new website, which i
 The following sections detail the most significant changes. Anyone using the Bittrex API should read carefully the information below to understand whether there are any potential impacts to their systems. While unlikely, if we determine additional API changes are needed during our Beta site testing, we will provide users the updated information when the official website launches. 
 
 ### Access to Account and Exchange Data
-We have identified common API patterns used by bots and other trading software to obtain up-to-date information from Bittrex. In order to help streamline the process for developers and to prevent potentially abusive behavior, we are providing new methods for accessing account and exchange data, and we strongly encourage all developers to leverage these tools. (See API Best Practices provided in a section below.)
+We have identified common API patterns used by bots and other trading software to obtain up-to-date information from Bittrex. In order to help streamline the process for developers and to prevent potentially abusive behavior, we are providing new methods for accessing account and exchange data, and we strongly encourage all developers to leverage these tools. (See [API Best Practices](#api-best-practices))
 
 ### Throttling
 Improper API use affects the efficiency of the platform for our customers, and we have enabled throttling on all endpoints to mitigate the adverse effects of this improper behavior. Accounts will be permitted to make a maximum of 60 API calls per minute, and calls after the limit will fail, with throttle settings automatically resetting at the start of the next minute.
@@ -221,7 +221,7 @@ Boolean indicating whether the user was subscribed to the feed.
 "l" = "Last"
 "M" = "MarketName"
 "m" = "BaseVolume"
-"N" = "Nounce"
+"N" = "Nonce"
 "n" = "CommissionPaid"
 "O" = "Orders"
 "o" = "Order"
@@ -252,8 +252,6 @@ Boolean indicating whether the user was subscribed to the feed.
 "Z" = "Buys"
 "z" = "Pending"
 ```
-_**Note:** The term “nounce” in this document is not a mistake. While most of the Bittrex API uses the term “nonce”, the platform’s internal code has a typo that makes its way out into JSON response objects. This is a known bug and will be fixed in a future release._
-
 
 
 # Appendix B: Callbacks and Payloads
