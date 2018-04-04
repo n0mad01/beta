@@ -1,6 +1,13 @@
 /**
  *  Node.js example 
  *  https://github.com/Bittrex/beta
+ *
+ *  Adrian Soluch
+ *
+ *  prerequisites:
+ *  npm i signalr-client jsonic
+ *
+ *  tested on node v9.10.1
  */
 const signalR = require ('signalr-client');
 const jsonic = require('jsonic');
